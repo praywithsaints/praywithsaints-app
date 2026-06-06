@@ -97,18 +97,21 @@ const ENTRIES: Entry[] = [
   { name: 'Settings', component: SettingsScreen, icon: ['ion', 'settings-outline'] },
 ];
 
-/** Drawer with a branded header above the navigation items. */
+/** Drawer with a sticky branded header above the scrollable navigation items. */
 function CustomDrawerContent(props: DrawerContentComponentProps) {
   const insets = useSafeAreaInsets();
   return (
-    <DrawerContentScrollView {...props} contentContainerStyle={styles.drawerContent}>
-      <View style={[styles.brand, { paddingTop: insets.top + spacing.md }]}>
+    <View style={styles.drawer}>
+      {/* Sticky header — stays fixed while the items below scroll */}
+      <View style={[styles.brand, { paddingTop: insets.top }]}>
         <Logo width={210} />
       </View>
-      <View style={styles.items}>
-        <DrawerItemList {...props} />
-      </View>
-    </DrawerContentScrollView>
+      <DrawerContentScrollView {...props} contentContainerStyle={styles.scrollContent}>
+        <View style={styles.items}>
+          <DrawerItemList {...props} />
+        </View>
+      </DrawerContentScrollView>
+    </View>
   );
 }
 
@@ -116,6 +119,7 @@ export default function AppDrawer() {
   return (
     <Drawer.Navigator
       initialRouteName="Rosary"
+      defaultStatus="open"
       drawerContent={(props) => <CustomDrawerContent {...props} />}
       screenOptions={{
         headerStyle: { backgroundColor: colors.primary },
@@ -142,12 +146,12 @@ export default function AppDrawer() {
 }
 
 const styles = StyleSheet.create({
-  drawerContent: { paddingTop: 0, paddingStart: 0, paddingEnd: 0 },
+  drawer: { flex: 1 },
+  scrollContent: { paddingTop: spacing.sm, paddingStart: 0, paddingEnd: 0 },
   brand: {
     backgroundColor: colors.primary,
     paddingHorizontal: spacing.md,
-    paddingBottom: spacing.lg,
-    marginBottom: spacing.sm,
+    paddingBottom: spacing.xs,
     alignItems: 'center',
   },
   items: { paddingHorizontal: spacing.sm },

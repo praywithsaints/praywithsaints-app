@@ -74,24 +74,52 @@ function svg({ half, background }) {
   return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${x} ${y} ${size} ${size}">${bg}${markElements()}</svg>`;
 }
 
-function render(svgString, width, outFile) {
-  const resvg = new Resvg(svgString, { fitTo: { mode: 'width', value: width } });
+function render(svgString, width, outFile, fontFiles) {
+  const options = { fitTo: { mode: 'width', value: width } };
+  if (fontFiles) {
+    options.font = { fontFiles, loadSystemFonts: false, defaultFontFamily: 'EB Garamond' };
+  }
+  const resvg = new Resvg(svgString, options);
   const png = resvg.render().asPng();
   writeFileSync(join(assets, outFile), png);
   console.log('wrote', outFile, `(${width}px)`);
 }
 
-// 1) iOS / main launcher icon — opaque purple background, ~24% padding.
+// EB Garamond (the app's serif) for baking the wordmark into the splash image.
+const FONT_FILES = [
+  join(root, 'node_modules/@expo-google-fonts/eb-garamond/700Bold/EBGaramond_700Bold.ttf'),
+  join(root, 'node_modules/@expo-google-fonts/eb-garamond/400Regular/EBGaramond_400Regular.ttf'),
+];
+
+// Inner elements of the full brand lockup: mark + divider + wordmark + tagline.
+function lockupContents() {
+  return `
+    ${markElements()}
+    <line x1="180" y1="270" x2="500" y2="270" stroke="#AFA9EC" stroke-width="0.5"/>
+    <text x="340" y="314" fill="#CECBF6" font-family="EB Garamond" font-weight="700" font-size="33" text-anchor="middle">Pray with Saints</text>
+    <text x="340" y="344" fill="#B4B2A9" font-family="EB Garamond" font-weight="400" font-size="14" letter-spacing="1.5" text-anchor="middle">PRAYWITHSAINTS.COM</text>
+  `;
+}
+
+// Wrap the lockup in a square viewBox (x,y,size) with an optional background.
+function lockupSvg({ x, y, size, background }) {
+  const bg = background ? `<rect x="${x}" y="${y}" width="${size}" height="${size}" fill="${background}"/>` : '';
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${x} ${y} ${size} ${size}">${bg}${lockupContents()}</svg>`;
+}
+
+// The lockup content spans roughly x[180,500], y[64,350] (centre ≈ 340,207).
+
+// 1) iOS / main launcher icon — candle mark only, opaque purple, ~24% padding.
 render(svg({ half: 126, background: C.purple }), 1024, 'icon.png');
 
-// 2) Android adaptive foreground — transparent, extra padding for the mask
-//    safe zone (mark ≈ 50% of canvas). Background colour set in app.json.
+// 2) Android adaptive foreground — candle mark only, transparent, extra padding
+//    for the mask safe zone. Background colour set in app.json.
 render(svg({ half: 192, background: null }), 1024, 'android-icon-foreground.png');
 
-// 3) Splash mark — transparent; Expo paints the backgroundColor behind it.
-render(svg({ half: 130, background: null }), 768, 'splash-icon.png');
+// 3) Splash — full lockup (mark + wordmark + tagline), transparent background.
+render(lockupSvg({ x: 160, y: 27, size: 360, background: null }), 1100, 'splash-icon.png', FONT_FILES);
 
-// 4) Web favicon.
+// 4) Web favicon — candle mark only on purple.
 render(svg({ half: 126, background: C.purple }), 196, 'favicon.png');
 
 console.log('done');

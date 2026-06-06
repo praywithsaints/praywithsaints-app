@@ -36,8 +36,8 @@ const CY = 160;
  */
 export default function Logo({ width = 220, showWordmark = true }: Props) {
   // Crop tightly to the artwork; include the wordmark area only when shown.
-  const viewBox = showWordmark ? '150 52 380 308' : '236 56 208 208';
-  const ratio = showWordmark ? 308 / 380 : 208 / 208;
+  const viewBox = showWordmark ? '150 61 380 295' : '236 56 208 208';
+  const ratio = showWordmark ? 295 / 380 : 208 / 208;
   const height = width * ratio;
 
   // 12 halo rays (short ticks at radius 86→94).
@@ -88,8 +88,8 @@ export default function Logo({ width = 220, showWordmark = true }: Props) {
       {showWordmark && (
         <>
           <Line x1={180} y1={270} x2={500} y2={270} stroke={C.divider} strokeWidth={0.5} />
-          <SvgText x={340} y={314} fill={C.wordmark} fontFamily={fonts.bold} fontSize={36} textAnchor="middle">
-            PrayWithSaints
+          <SvgText x={340} y={314} fill={C.wordmark} fontFamily={fonts.bold} fontSize={33} textAnchor="middle">
+            Pray with Saints
           </SvgText>
           <SvgText x={340} y={344} fill={C.tagline} fontFamily={fonts.regular} fontSize={14} textAnchor="middle">
             PRAYWITHSAINTS.COM

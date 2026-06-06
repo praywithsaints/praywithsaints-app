@@ -1,7 +1,8 @@
 import 'react-native-gesture-handler';
-import React from 'react';
-import { ActivityIndicator, View } from 'react-native';
+import React, { useCallback } from 'react';
+import { View } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
+import * as SplashScreen from 'expo-splash-screen';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { NavigationContainer } from '@react-navigation/native';
@@ -14,7 +15,10 @@ import {
 } from '@expo-google-fonts/eb-garamond';
 import AppDrawer from './src/navigation/AppDrawer';
 import { SettingsProvider } from './src/settings/SettingsContext';
-import { colors } from './src/theme';
+
+// Keep the native splash (the full logo lockup) on screen until the app is
+// ready — no auto-hide, no intermediate spinner.
+SplashScreen.preventAutoHideAsync().catch(() => {});
 
 export default function App() {
   const [fontsLoaded] = useFonts({
@@ -24,16 +28,21 @@ export default function App() {
     EBGaramond_700Bold,
   });
 
+  // Hide the splash only once the first screen has laid out, so the hand-off is
+  // seamless (splash → app, with no blank frame).
+  const onLayoutRootView = useCallback(async () => {
+    if (fontsLoaded) {
+      await SplashScreen.hideAsync().catch(() => {});
+    }
+  }, [fontsLoaded]);
+
+  // While fonts load, render nothing — the native splash stays visible.
   if (!fontsLoaded) {
-    return (
-      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: colors.background }}>
-        <ActivityIndicator color={colors.primary} />
-      </View>
-    );
+    return null;
   }
 
   return (
-    <GestureHandlerRootView style={{ flex: 1 }}>
+    <GestureHandlerRootView style={{ flex: 1 }} onLayout={onLayoutRootView}>
       <SafeAreaProvider>
         <SettingsProvider>
           <NavigationContainer>
