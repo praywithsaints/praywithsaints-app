@@ -96,8 +96,9 @@ function lockupContents() {
   return `
     ${markElements()}
     <line x1="180" y1="270" x2="500" y2="270" stroke="#AFA9EC" stroke-width="0.5"/>
-    <text x="340" y="314" fill="#CECBF6" font-family="EB Garamond" font-weight="700" font-size="33" text-anchor="middle">Pray with Saints</text>
-    <text x="340" y="344" fill="#B4B2A9" font-family="EB Garamond" font-weight="400" font-size="14" letter-spacing="1.5" text-anchor="middle">PRAYWITHSAINTS.COM</text>
+    <text x="340" y="301" fill="#CECBF6" font-family="EB Garamond" font-weight="700" font-size="23" text-anchor="middle">Lord, melt me like wax</text>
+    <text x="340" y="329" fill="#CECBF6" font-family="EB Garamond" font-weight="700" font-size="23" text-anchor="middle">while You burn in me.</text>
+    <text x="340" y="354" fill="#B4B2A9" font-family="EB Garamond" font-weight="400" font-size="13" letter-spacing="1.5" text-anchor="middle">PRAYWITHSAINTS.COM</text>
   `;
 }
 
