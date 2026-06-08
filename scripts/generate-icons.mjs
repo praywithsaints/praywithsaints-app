@@ -123,4 +123,9 @@ render(lockupSvg({ x: 160, y: 27, size: 360, background: null }), 1100, 'splash-
 // 4) Web favicon — candle mark only on purple.
 render(svg({ half: 126, background: C.purple }), 196, 'favicon.png');
 
+// 5) Standalone lockup on a solid purple background (NOT used by the app —
+//    for external use, e.g. store listings / social). The app's splash still
+//    uses the transparent splash-icon.png above.
+render(lockupSvg({ x: 160, y: 27, size: 360, background: C.purple }), 3840, 'splash-icon-bg.png', FONT_FILES);
+
 console.log('done');
